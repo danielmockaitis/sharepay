@@ -6,7 +6,7 @@ Rails.application.routes.draw do
   match '/transactions/show/:id', :to => 'transactions#show', :as => :transactions_show, via: [:get]
   match '/transactions/approve/:id', :to => 'transactions#approve', :as => :transactions_approve, via: [:post]
   match '/transactions/requests' => 'transactions#requests', via: [:get, :post]
-  match '/transactions/run' => 'transactions#run', via: [:get, :post]
+  match '/transactions/run/:id' => 'transactions#run', :as => :transactions_run, via: [:post]
   match '/signup' => 'users#signup', via: [:get, :post]
   match '/signup/creditcard' => 'users#credit_card', via: [:get, :post]
   match '/login' => 'users#login', via: [:get, :post]

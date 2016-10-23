@@ -43,7 +43,7 @@
                   %td= User.find(tran.requester).name
                   %td
                   %td
-                  %td= link_to "Approve This Transaction", transactions_approve_path(tran)
+                  %td= link_to "Approve This Transaction", transactions_approve_path(tran),:method => :POST
    %br
    %br
    %br

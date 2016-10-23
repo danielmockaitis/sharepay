@@ -44,7 +44,7 @@
                   %td
                   %td
                   - if tran.total_payers.to_i - tran.already_paid.to_i == 0
-                     %td= link_to "Make Transaction", transactions_run_path(tran)
+                     %td= link_to "Make Transaction", transactions_run_path(tran), :method => "POST"
                   - else
                      %td= link_to "More about #{tran.title}", transactions_show_path(tran), :method => "GET"
    %br

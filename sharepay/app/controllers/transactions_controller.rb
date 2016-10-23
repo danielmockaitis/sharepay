@@ -8,23 +8,21 @@ class TransactionsController < ApplicationController
    end
 
    def run
-      transaction = Transaction.find(params[:id])
-      if transaction.already_paid.to_i == transaction.total_payers
-         #make Transaction
-         transaction.status = "Approved"
-         transaction.save
-         # flash[:notice] = "Transaction Successfully Approved!"
-      else
-         flash[:error] = "Transaction Denied!"
-         redirect_to transactions_path
-      end
+      @transaction = Transaction.find(params[:id])
    end
 
    def approve
-      transaction = Transaction.find(params[:id])
-      transaction.already_paid.to_i += 1
-      transaction.already_paid = transaction.already_paid.to_s
-      transaction.save!
+      curr_id = session[:current_user_id]
+      @transaction = Transaction.find(params[:id])
+
+      Transaction.send_to_temp(@transaction.id, curr_id)
+      puts "Shit"
+      puts @transaction
+      if @transaction.status == "Rejected"
+         flash[:error] = "Transaction Denied!"
+      end
+      redirect_to transactions_path
+
    end
 
    def show
@@ -74,10 +72,13 @@ class TransactionsController < ApplicationController
             trans_params[:virtual_credit_card] = card_dict[:pan_number]
             trans_params[:expiration] = card_dict[:expiration]
             trans_params[:ccv] = card_dict[:cvv]
-            trans_params[:already_paid] = '0'
+            trans_params[:already_paid] = '1'
             trans_params[:status] = 'Pending'
             trans_params[:requester] = session[:current_user_id]
-            trans_params[:total_payers] = params[:users].length
+            total = params[:users].split.length.to_i + 1
+            puts "TOTAL FUCKER"
+            puts total
+            trans_params[:total_payers] = total.to_s
             puts trans_params.inspect
             # transaction = Transaction.new(trans_params)
             co_payer_ids = params[:users].split()
@@ -91,6 +92,15 @@ class TransactionsController < ApplicationController
                   flash[:error] = 'Transaction could not be completed!'
                end
             end
+            # curr_user = User.find(session[:current_user_id])
+            # curr_trans = curr_user.trans.new(trans_params)
+            # puts curr_user.inspect
+
+            # curr_trans.save
+            # puts "CURRENT TRANS"
+            # puts curr_trans.inspect
+            # Transaction.send_to_temp(curr_trans.id, session[:current_user_id])
+
          end
       else
          @all_users = User.where.not(id: session[:current_user_id]).to_a
