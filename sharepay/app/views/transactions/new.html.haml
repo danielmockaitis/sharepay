@@ -1,0 +1,16 @@
+.jumbotron
+   %h3 Create a Transaction
+   = form_tag transactions_new_path, :method => :post do
+      %label{:for => "name"} Price $
+      %input{:name => "price", :type =>"text", :size => 5}
+      %br
+      %br
+      %label{:for => "title"} Title
+      %input{:name => "title", :type =>"text"}
+      %br
+      %br
+      %label{:for => "title"} Description
+      %textarea{:name => "title"}
+      %br
+      %br
+      %input{:type => "submit", :value => "Create"}

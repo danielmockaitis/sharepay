@@ -1,0 +1,49 @@
+.jumbotron
+	%h3 Sign Up for Share Pay
+	= form_tag signup_path, :method => :post do
+		%label{:for => "name"} Full Name
+		%input{"data-stripe" => "name", :name => "name", :type => "text"}
+		%br
+		%br
+		%label{:for => "phone"} Phone
+		%input{"data-stripe" => "name", :name => "phone", :type => "text"}
+		%br
+		%br
+		%label{:for => "email"} Email
+		%input{"data-stripe" => "name", :name => "email", :type => "email"}
+		%br
+		%br
+		%label{:for => "username"} Username
+		%input{"data-stripe" => "name", :name => "username", :type => "text"}
+		%br
+		%br
+		%label{:for => "password"} Password
+		%input{:type => "password", :name => "password"}
+		%br
+		%br
+		%label{:for => "password_confirm"} Confirm Password
+		%input{:type => "password", :name => "password_confirm"}
+		%br
+		%br
+		%label{:for => "number"} Credit Card Number
+		%input{"data-stripe" => "number", :name => "credit_card_num", :size => "20", :type => "text", :required => '', pattern: 'card'}
+		%br
+		%br
+		%label{:for => "exp_month"} Expiration Date
+		%select{"data-stripe" => "exp_month", :name => "exp_month", :required => ''}
+			- # :pattern => '^(1[0-2]|0[1-9])$'}
+			= options_for_select (0..12).map {|month| (month == 0) ? ['Month', nil] : [ [month, Date::MONTHNAMES[month]].join(' - '), "%02d" % month ] }
+		%select{"data-stripe" => "exp_year", :name => "exp_year", :required => ''}
+			- # :pattern => "^(1[#{Time.now.strftime('%y')[-1]}-9]|[2-3][0-9])$"}
+			- this_year = Time.now.strftime('%Y').to_i
+			= options_for_select ((this_year-1)..(this_year+20)).map {|year| (year == this_year-1) ? ['Year', nil] : [ year, year.to_s[2..4] ] }
+		-# %small{class: 'error'} Select a year
+		%br
+		%br
+		%label{:for => "cvc", :width => 3} CVV2/CVC2
+		%input{"data-stripe" => "ccv", :name => "ccv", :type => "password", :required => '', :size => 5}
+		-# %small{class: 'error'} Invalid
+		%br
+		%br
+
+		%input{:type => "submit", :value => "Sign Up"}
