@@ -1,6 +1,7 @@
 require 'digest/sha1'
 require 'net/http'
 require 'uri'
+require 'json'
 
 class User < ApplicationRecord
 
@@ -10,13 +11,13 @@ class User < ApplicationRecord
    validates_uniqueness_of :email, :on => :create
    validates_uniqueness_of :phone, :on => :create
    validates_presence_of :username
-   validates_presence_of :phone
+   validates_presence_of :phone, length: {is: 10}
    validates_presence_of :email
    validates_presence_of :password
    validates_presence_of :name
-   validates_presence_of :credit_card_num
-   validates_presence_of :ccv
-   validates_presence_of :expiration
+   validates_presence_of :credit_card_num, length: {minimum: 16}
+   validates_presence_of :ccv, length: {is: 3}
+   validates_presence_of :expiration, length: {is: 4}
 
    class_attribute :salt
 
@@ -99,17 +100,19 @@ class User < ApplicationRecord
       request["Accept"] = "application/json"
       request["Authorization"] = "Basic dXNlcjI1NzE0NzcxOTAwNDQ6ZmJiMGY2ZWUtM2E2OC00ZDI3LTkwOTQtNTAxM2FmNDY2Mjdi"
       request.body =
-      "{ \\
-       \"user_token\":\"34e30c1b-f402-4beb-aace-b1f8c237f538\", \\
-       \"account_number\": \"" + user.credit_car + "\", \\
-       \"exp_date\":\"" + user.exp_date + "\", \\
-       \"cvv_number\":\"" + user.ccv + "\" \\
+      "{
+       \"user_token\":\"34e30c1b-f402-4beb-aace-b1f8c237f538\",
+       \"account_number\": \"" + user.credit_car + "\",
+       \"exp_date\":\"" + user.exp_date + "\",
+       \"cvv_number\":\"" + user.ccv + "\"
       }"
 
       response = Net::HTTP.start(uri.hostname, uri.port, use_ssl: uri.scheme == "https") do |http|
          http.request(request)
       end
-      funding_source_token = response["token"]
+
+      funding_source_token = JSON.parse(response.body)[:token]
+      return funding_source_token
    end
 
    def send_to_temp(transaction_id, user_id)
@@ -120,6 +123,7 @@ class User < ApplicationRecord
       request.content_type = "application/json"
       request["Accept"] = "application/json"
       request["Authorization"] = "Basic dXNlcjI1NzE0NzcxOTAwNDQ6ZmJiMGY2ZWUtM2E2OC00ZDI3LTkwOTQtNTAxM2FmNDY2Mjdi"
+<<<<<<< HEAD
       request.body = "{ \\
         \"user_token\": \"34e30c1b-f402-4beb-aace-b1f8c237f538\", \\
         \"currency_code\": \"840\", \\
@@ -132,6 +136,21 @@ class User < ApplicationRecord
       response = Net::HTTP.start(uri.hostname, uri.port, use_ssl: uri.scheme == "https") do |http|
          http.request(request)
       end
+=======
+      request.body = "{
+        \"user_token\": \"34e30c1b-f402-4beb-aace-b1f8c237f538\",
+        \"currency_code\": \"840\",
+        \"amount\":" + transaction.price.to_s + ",
+        \"funding_source_token\": \""+ user.funding_source_token+ "\",
+        \"funding_source_address_token\": \"54fddb5b-2a7e-4fdb-b3c2-3e1d601dff51\"
+      }
+      "
+
+      response = Net::HTTP.start(uri.hostname, uri.port, use_ssl: uri.scheme == "https") do |http|
+       http.request(request)
+      end
+
+>>>>>>> 39ef31e4741fac47507d1edcde79577b5d27b2c6
    end
 
 end
