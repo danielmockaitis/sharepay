@@ -7,4 +7,5 @@ Rails.application.routes.draw do
   match '/signup/creditcard' => 'users#credit_card', via: [:get, :post]
   match '/login' => 'users#login', via: [:get, :post]
   match '/logout' => 'users#logout', via: [:get, :post]
+  match '/users/:id', :to => 'users#show', :as => :user, via: [:get, :post]
 end
