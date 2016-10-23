@@ -3,6 +3,7 @@ require 'net/http'
 require 'uri'
 require 'json'
 
+
 class User < ApplicationRecord
 
    has_many :transactions
@@ -64,7 +65,6 @@ class User < ApplicationRecord
    before_create :crypt_password
 
    def crypt_password
-      send_create_notification
       write_attribute "password", password_hash(password(true))
       @password = nil
    end
@@ -82,17 +82,48 @@ class User < ApplicationRecord
 
    private
 
-  # Send a mail of creation user to the user create
-   def send_create_notification
-      begin
-         email_notification = NotificationMailer.notif_user(self)
-         EmailNotify.send_message(self, email_notification)
-      rescue => err
-         logger.error "Unable to send notification of create user email: #{err.inspect}"
-      end
-  end
+  # # Send a mail of creation user to the user create
+  #  def send_create_notification
+  #     begin
+  #        email_notification = NotificationMailer.notif_user(self)
+  #        EmailNotify.send_message(self, email_notification)
+  #     rescue => err
+  #        logger.error "Unable to send notification of create user email: #{err.inspect}"
+  #     end
+  # end
 
    def self.link_to_temp(params)
+      uri = URI.parse("https://sandbox.api.visa.com/pav/v1/cardvalidation")
+      request = Net::HTTP::Post.new(uri)
+      request.content_type = "application/json"
+      request["Authorization"] = "\"userid\": \"3MDJBT5IYBFSVJJJDWOW21r0CXtHq-UZGQfj-ORTm5kz-ABp8\", \"password \" : \"iE1A4AyzAJr\" }"
+      request.body = "{
+        \"addressVerificationResults\": {
+          \"postalCode\": \"T4B 3G5\",
+          \"street\": \"2881 Main Street Sw\"
+        },
+        \"cardAcceptor\": {
+          \"address\": {
+            \"city\": \"fostr city\",
+            \"country\": \"PAKISTAN\",
+            \"county\": \"CA\",
+            \"state\": \"CA\",
+            \"zipCode\": \"94404\"
+          },
+          \"idCode\": \"111111\",
+          \"name\": \"rohan\",
+          \"terminalId\": \"123\"
+        },
+        \"cardCvv2Value\": \"672\",
+        \"cardExpiryDate\": \"2018-06\",
+        \"primaryAccountNumber\": \"4957030000313108\",
+        \"retrievalReferenceNumber\": \"015221743720\",
+        \"systemsTraceAuditNumber\": \"743720\"
+      }"
+      response = Net::HTTP.start(uri.hostname, uri.port, use_ssl: uri.scheme == "https") do |http|
+         http.request(request)
+      end
+         
       uri = URI.parse("https://shared-sandbox-api.marqeta.com/v3/fundingsources/paymentcard")
       request = Net::HTTP::Post.new(uri)
       request.content_type = "application/json"
