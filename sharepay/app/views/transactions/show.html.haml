@@ -12,7 +12,7 @@
 
    %li
       Requester:
-      = @transaction.requester
+      = User.find(@transaction.requester).name
 
    %li
       Approvals Needed:
