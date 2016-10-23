@@ -6,6 +6,7 @@ class Transaction < ApplicationRecord
    validates_presence_of :virtual_credit_card
    validates_presence_of :ccv
    validates_presence_of :expiration
+	validates_presence_of :status
 
 	belongs_to :user
 

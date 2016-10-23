@@ -7,6 +7,10 @@ class TransactionsController < ApplicationController
       params.permit(:price, :title, :description).except(:users)
    end
 
+   def pending_transactions
+
+   end
+
    def index
       if session[:current_user_id]
          current_user_id = session[:current_user_id]
@@ -31,6 +35,7 @@ class TransactionsController < ApplicationController
             trans_params[:expiration] = card_dict[:expiration]
             trans_params[:ccv] = card_dict[:cvv]
             trans_params[:already_paid] = '0'
+            trans_params[:status] = 'Pending'
             trans_params[:total_payers] = params[:users].length
             puts trans_params.inspect
             # transaction = Transaction.new(trans_params)
