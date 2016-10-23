@@ -92,8 +92,7 @@ class User < ApplicationRecord
       end
   end
 
-   def link_to_temp(user_id)
-      user = Users.find_by(id:user_id)
+   def self.link_to_temp(params)
       uri = URI.parse("https://shared-sandbox-api.marqeta.com/v3/fundingsources/paymentcard")
       request = Net::HTTP::Post.new(uri)
       request.content_type = "application/json"
@@ -102,41 +101,19 @@ class User < ApplicationRecord
       request.body =
       "{
        \"user_token\":\"34e30c1b-f402-4beb-aace-b1f8c237f538\",
-       \"account_number\": \"" + user.credit_car + "\",
-       \"exp_date\":\"" + user.exp_date + "\",
-       \"cvv_number\":\"" + user.ccv + "\"
+       \"account_number\": \"" + params[:credit_card_num] + "\",
+       \"exp_date\":\"" + params[:expiration] + "\",
+       \"cvv_number\":\"" + params[:ccv] + "\"
       }"
 
       response = Net::HTTP.start(uri.hostname, uri.port, use_ssl: uri.scheme == "https") do |http|
          http.request(request)
       end
 
-      funding_source_token = JSON.parse(response.body)[:token]
+
+      funding_source_token = JSON.parse(response.body)["token"]
+
       return funding_source_token
-   end
-
-   def send_to_temp(transaction_id, user_id)
-      user = Users.find_by(id: user_id)
-      transaction = Transactions.find_by(id: transaction_id)
-      uri = URI.parse("https://shared-sandbox-api.marqeta.com/v3/gpaorders")
-      request = Net::HTTP::Post.new(uri)
-      request.content_type = "application/json"
-      request["Accept"] = "application/json"
-      request["Authorization"] = "Basic dXNlcjI1NzE0NzcxOTAwNDQ6ZmJiMGY2ZWUtM2E2OC00ZDI3LTkwOTQtNTAxM2FmNDY2Mjdi"
-
-      request.body = "{
-        \"user_token\": \"34e30c1b-f402-4beb-aace-b1f8c237f538\",
-        \"currency_code\": \"840\",
-        \"amount\":" + transaction.price.to_s + ",
-        \"funding_source_token\": \""+ user.funding_source_token+ "\",
-        \"funding_source_address_token\": \"54fddb5b-2a7e-4fdb-b3c2-3e1d601dff51\"
-      }
-      "
-
-      response = Net::HTTP.start(uri.hostname, uri.port, use_ssl: uri.scheme == "https") do |http|
-       http.request(request)
-      end
-
    end
 
 end

@@ -38,4 +38,36 @@ class Transaction < ApplicationRecord
 					 :cvv => response["cvv_number"] }
 		return card_dict
 	end
+
+   def self.send_to_temp(transaction_id, user_id)
+      user = Users.find(user_id)
+      transaction = Transactions.find(transaction_id)
+      uri = URI.parse("https://shared-sandbox-api.marqeta.com/v3/gpaorders")
+      request = Net::HTTP::Post.new(uri)
+      request.content_type = "application/json"
+      request["Accept"] = "application/json"
+      request["Authorization"] = "Basic dXNlcjI1NzE0NzcxOTAwNDQ6ZmJiMGY2ZWUtM2E2OC00ZDI3LTkwOTQtNTAxM2FmNDY2Mjdi"
+
+      request.body = "{
+        \"user_token\": \"34e30c1b-f402-4beb-aace-b1f8c237f538\",
+        \"currency_code\": \"840\",
+        \"amount\":" + transaction.price + ",
+        \"funding_source_token\": \"" + user.funding_source_token+ "\",
+        \"funding_source_address_token\": \"" + user.funding_source_address + "\"
+      }
+      "
+
+      response = Net::HTTP.start(uri.hostname, uri.port, use_ssl: uri.scheme == "https") do |http|
+       http.request(request)
+      end
+      if response.code != 201
+      	transaction.update(status: "Rejected")
+      else
+      	new_accepted = transaction.already_paid.to_i + 1
+      	transaction.update(already_paid: new_accepted.to_s)
+      end
+      if transaction.already_paid == transaction.total_payers
+      	transaction.update(status: "Confirmed")
+  	  end
+   end
 end

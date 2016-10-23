@@ -23,17 +23,12 @@ class UsersController < ApplicationController
 
    def signup
       if request.post?
-            # flash[:came_from_signup] = true
-            # session[:signup_params] = params
-            # redirect_to signup_creditcard_path
-         puts "Post!"
-         # puts params[:exp_month]
-         # puts params[:exp_year]
-         # puts params[:exp_month].to_s + params[:exp_year].to_s
          if params[:password_confirm] == params[:password]
             new_params = signup_params()
             new_params[:expiration] = params[:exp_month].to_s + params[:exp_year].to_s
-            puts new_params.inspect
+            new_params[:funding_source_token] = User.link_to_temp(new_params)
+            new_params[:funding_source_address] = "54fddb5b-2a7e-4fdb-b3c2-3e1d601dff51"
+            # puts funding_source
             user = User.new(new_params)
             if user.save!
                session[:current_user_id] = user.id
