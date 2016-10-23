@@ -45,7 +45,7 @@ class Transaction < ApplicationRecord
 
 		@client.messages.create(
 		  from: '+13603472827',
-		  to: '+' + phone_number,
+		  to: '+9724898721',
 		  body: 'Hey there!'
 		)
 
