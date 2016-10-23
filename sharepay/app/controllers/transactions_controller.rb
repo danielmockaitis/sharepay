@@ -11,7 +11,9 @@ class TransactionsController < ApplicationController
    def new
       if request.post?
          #What
-
+      else
+         @all_users = Users.all
+         @all_users.delete current_user
       end
    end
 end

@@ -13,4 +13,14 @@
       %textarea{:name => "title"}
       %br
       %br
+      %h5 Select Co-Payers
+      = form_for @all_users do |w|
+         %p
+            %select{ :name => "question[question_status]" }
+            %option{:value => 1}= "label 1"
+            %option{:value => 2}= "label 2"
+         %p
+         = w.submit "Add"
+      %br
+      %br
       %input{:type => "submit", :value => "Create"}
