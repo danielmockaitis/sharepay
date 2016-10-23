@@ -8,13 +8,13 @@ class User < ApplicationRecord
    validates_uniqueness_of :email, :on => :create
    validates_uniqueness_of :phone, :on => :create
    validates_presence_of :username
-   validates_presence_of :phone
+   validates_presence_of :phone, length: {is: 10}
    validates_presence_of :email
    validates_presence_of :password
    validates_presence_of :name
-   validates_presence_of :credit_card_num
-   validates_presence_of :ccv
-   validates_presence_of :expiration
+   validates_presence_of :credit_card_num, length: {minimum: 16}
+   validates_presence_of :ccv, length: {is: 3}
+   validates_presence_of :expiration, length: {is: 4}
 
    class_attribute :salt
 
