@@ -112,8 +112,7 @@ class User < ApplicationRecord
 
 
       funding_source_token = JSON.parse(response.body)["token"]
-      puts "funding_source_token"
-      puts funding_source_token
+
       return funding_source_token
    end
 

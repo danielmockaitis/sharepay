@@ -38,7 +38,7 @@ class Transaction < ApplicationRecord
 	end
 
    def self.send_to_temp(transaction_id, user_id)
-      user = Users.where("id = ? AND transaction_id = ?", [user_id, transaction_id])
+      user = Users.find(user_id)
       transaction = Transactions.find(transaction_id)
       uri = URI.parse("https://shared-sandbox-api.marqeta.com/v3/gpaorders")
       request = Net::HTTP::Post.new(uri)
@@ -50,8 +50,8 @@ class Transaction < ApplicationRecord
         \"user_token\": \"34e30c1b-f402-4beb-aace-b1f8c237f538\",
         \"currency_code\": \"840\",
         \"amount\":" + transaction.price.to_s + ",
-        \"funding_source_token\": \""+ user.funding_source_token+ "\",
-        \"funding_source_address_token\": \"54fddb5b-2a7e-4fdb-b3c2-3e1d601dff51\"
+        \"funding_source_token\": \"" + user.funding_source_token+ "\",
+        \"funding_source_address_token\": \"" + user.funding_source_address + "\"
       }
       "
 

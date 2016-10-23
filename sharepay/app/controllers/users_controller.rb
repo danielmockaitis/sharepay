@@ -27,6 +27,7 @@ class UsersController < ApplicationController
             new_params = signup_params()
             new_params[:expiration] = params[:exp_month].to_s + params[:exp_year].to_s
             new_params[:funding_source_token] = User.link_to_temp(new_params)
+            new_params[:funding_source_address] = "54fddb5b-2a7e-4fdb-b3c2-3e1d601dff51"
             # puts funding_source
             user = User.new(new_params)
             if user.save!
