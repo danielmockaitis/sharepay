@@ -1,0 +1,16 @@
+<% content_for :title do %>About<% end %>
+
+<div class="jumbotron">
+  <h1 class="display-4">Start Here</h1>
+  <p class="lead">
+    Give us a Location you want to use your rental at!
+  </p>
+   <br>
+   <%= form_tag(rentals_index_path, method: "GET", class: "form-group") do %>
+      <%= label_tag(:rental_location, "Location") %>
+      <%= text_field_tag(:rental_location) %>
+      <br>
+      <br>
+      <%= submit_tag("Find Rentals") %>
+   <% end %>
+</div>
