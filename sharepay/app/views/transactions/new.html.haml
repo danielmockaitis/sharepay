@@ -9,18 +9,17 @@
       %input{:name => "title", :type =>"text"}
       %br
       %br
-      %label{:for => "title"} Description
-      %textarea{:name => "title"}
+      %label{:for => "description"} Description
+      %textarea{:name => "description"}
       %br
       %br
       %h5 Select Co-Payers
-      = form_for @all_users do |w|
+      - if @all_users
          %p
-            %select{ :name => "question[question_status]" }
-            %option{:value => 1}= "label 1"
-            %option{:value => 2}= "label 2"
+            %select{:multiple => true, :name => "users"}
+               -@all_users.each do |user|
+                  %option{:value => user.id}= user.name
          %p
-         = w.submit "Add"
       %br
       %br
       %input{:type => "submit", :value => "Create"}
