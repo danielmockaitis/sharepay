@@ -1,0 +1,26 @@
+-# in app/views/movies/show.html.haml
+
+%h2 Details about #{@transaction.title}
+
+%ul#details
+   %li
+      Price:
+      = "$" + @transaction.price
+   %li
+      Status:
+      = @transaction.status
+
+   %li
+      Requester:
+      = @transaction.requester
+
+   %li
+      Approvals Needed:
+      = (@transaction.total_payers.to_i - @transaction.already_paid.to_i).to_s
+
+
+%h4 Description:
+
+%p#description= @transaction.description
+
+= link_to 'Back to Transactions', transactions_path

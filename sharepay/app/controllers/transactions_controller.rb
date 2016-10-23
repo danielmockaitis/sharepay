@@ -7,14 +7,54 @@ class TransactionsController < ApplicationController
       params.permit(:price, :title, :description).except(:users)
    end
 
-   def pending_transactions
+   def run
+      transaction = Transaction.find(params[:id])
+      if transaction.already_paid.to_i == transaction.total_payers
+         #make Transaction
+         transaction.status = "Approved"
+         transaction.save
+         # flash[:notice] = "Transaction Successfully Approved!"
+      else
+         flash[:error] = "Transaction Denied!"
+         redirect_to transactions_path
+      end
+   end
 
+   def approve
+      transaction = Transaction.find(params[:id])
+      transaction.already_paid.to_i += 1
+      transaction.already_paid = transaction.already_paid.to_s
+      transaction.save!
+   end
+
+   def show
+      puts params.inspect
+      @transaction = Transaction.find(params[:id])
+   end
+
+   def requests
+      puts 'REQUEST'
+      if session[:current_user_id]
+         current_user_id = session[:current_user_id]
+         puts current_user_id
+         @current_user = User.find(current_user_id)
+         @requested_transactions = @current_user.transactions.all
+         puts "Requested Transactions"
+         puts @requested_transactions.inspect
+      else
+         redirect_to login_path
+      end
    end
 
    def index
+      puts 'INDEX'
       if session[:current_user_id]
          current_user_id = session[:current_user_id]
+         puts current_user_id
          @current_user = User.find(current_user_id)
+         @pending_transactions = Transaction.where(requester: current_user_id).to_a
+         puts "Pending Transactions"
+         puts @pending_transactions.inspect
       else
          redirect_to login_path
       end
@@ -36,6 +76,7 @@ class TransactionsController < ApplicationController
             trans_params[:ccv] = card_dict[:cvv]
             trans_params[:already_paid] = '0'
             trans_params[:status] = 'Pending'
+            trans_params[:requester] = session[:current_user_id]
             trans_params[:total_payers] = params[:users].length
             puts trans_params.inspect
             # transaction = Transaction.new(trans_params)
@@ -53,8 +94,9 @@ class TransactionsController < ApplicationController
          end
       else
          @all_users = User.where.not(id: session[:current_user_id]).to_a
-         if @all_users == nil
+         if @all_users.length == 0
             flash[:warning] = "There are no other users inputted to share the payment with."
+            redirect_to transactions_path
          end
       end
    end

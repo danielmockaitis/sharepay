@@ -4,8 +4,8 @@
 = link_to 'Requested Transactions', transactions_requests_path
 .jumbotron
    .display-4
-      Pending Transactions
-   %table#pending_transactions
+      Requested Transactions
+   %table#requested_transactions
       %thead
          %tr
             %th{:id => 'price_header', :class => change_title_label('price') }= link_to " Price ", transactions_path(:sort=>'price'), :id => 'prices_header'
@@ -25,8 +25,8 @@
             %th
             %th More Info
       %tbody
-         - if @pending_transactions
-            - @pending_transactions.each do |tran|
+         -if @requested_transactions
+            - @requested_transactions.each do |tran|
                %tr
                   %td= '$' + tran.price
                   %td
@@ -43,10 +43,7 @@
                   %td= User.find(tran.requester).name
                   %td
                   %td
-                  - if tran.total_payers.to_i - tran.already_paid.to_i == 0
-                     %td= link_to "Make Transaction", transactions_run_path(tran)
-                  - else
-                     %td= link_to "More about #{tran.title}", transactions_show_path(tran), :method => "GET"
+                  %td= link_to "Approve This Transaction", transactions_approve_path(tran)
    %br
    %br
    %br

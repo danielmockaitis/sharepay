@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20161023092536) do
+ActiveRecord::Schema.define(version: 20161023094941) do
 
   create_table "transactions", force: :cascade do |t|
     t.datetime "created_at",          null: false
@@ -26,6 +26,7 @@ ActiveRecord::Schema.define(version: 20161023092536) do
     t.string   "total_payers"
     t.string   "already_paid"
     t.string   "status"
+    t.string   "requester"
     t.index ["user_id"], name: "index_transactions_on_user_id"
   end
 

@@ -7,6 +7,7 @@ class Transaction < ApplicationRecord
    validates_presence_of :ccv
    validates_presence_of :expiration
 	validates_presence_of :status
+	validates_presence_of :requester
 
 	belongs_to :user
 
