@@ -1,0 +1,11 @@
+.jumbotron
+	%h3 Temporary Transaction Information
+	= form_tag transactions_completed_path, :method => :
+		post do
+		%label{:for => "card_number"} Temporary Credit Card Number
+		%label{:for=> "card_number"} @card_number
+
+		%label{:for => "cvc"} CVV2/ CVC2
+		%label{:for=> "cvc"} @ccv
+		%label{:for => "expiration"} Expiration Date
+		%label{:for => "expiration"} @expiration

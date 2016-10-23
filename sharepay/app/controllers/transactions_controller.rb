@@ -27,7 +27,7 @@ class TransactionsController < ApplicationController
       if transaction.num_accepted == transaction.num_needed
         @card_number = transaction.virtual_credit_card
         @ccv = transaction.ccv
-        @expiration = transaction.expiration
+        @expiration = transaction.expiration[:1] + "/" + transaction.expiration[2:]
       else
         redirect_to transactions_path
       end
