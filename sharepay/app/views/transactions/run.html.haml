@@ -1,0 +1,8 @@
+= link_to 'Pending Transactions', transactions_path
+&nbsp
+&nbsp
+= link_to 'Requested Transactions', transactions_requests_path
+.jumbotron
+   %h5 Request Approved!
+   %p Here is your virtual Credit Card Number to Make the #{@transaction.title} purchase!
+   #{@transaction.virtual_credit_card}
