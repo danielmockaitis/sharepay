@@ -38,8 +38,8 @@ class Transaction < ApplicationRecord
 	end
 
    def self.send_to_temp(transaction_id, user_id)
-      user = Users.find_by(id: user_id)
-      transaction = Transactions.find_by(id: transaction_id)
+      user = Users.where("id = ? AND transaction_id = ?", [user_id, transaction_id])
+      transaction = Transactions.find(transaction_id)
       uri = URI.parse("https://shared-sandbox-api.marqeta.com/v3/gpaorders")
       request = Net::HTTP::Post.new(uri)
       request.content_type = "application/json"
@@ -58,5 +58,15 @@ class Transaction < ApplicationRecord
       response = Net::HTTP.start(uri.hostname, uri.port, use_ssl: uri.scheme == "https") do |http|
        http.request(request)
       end
+      if response.code != 201
+      	transaction.update(status: "Rejected")
+      else
+      	transaction.update(status: "Accepted")
+      	new_accepted = transaction.already_paid.to_i + 1
+      	transaction.update(already_paid: new_accepted.to_s)
+      end
+      if transaction.already_paid == transaction.total_payers
+      	transaction.update(status: "Confirmed")
+  	  end
    end
 end
