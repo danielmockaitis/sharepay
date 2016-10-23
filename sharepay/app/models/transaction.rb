@@ -49,7 +49,7 @@ class Transaction < ApplicationRecord
       request.body = "{
         \"user_token\": \"34e30c1b-f402-4beb-aace-b1f8c237f538\",
         \"currency_code\": \"840\",
-        \"amount\":" + transaction.price.to_s + ",
+        \"amount\":" + transaction.price + ",
         \"funding_source_token\": \"" + user.funding_source_token+ "\",
         \"funding_source_address_token\": \"" + user.funding_source_address + "\"
       }
@@ -61,7 +61,6 @@ class Transaction < ApplicationRecord
       if response.code != 201
       	transaction.update(status: "Rejected")
       else
-      	transaction.update(status: "Accepted")
       	new_accepted = transaction.already_paid.to_i + 1
       	transaction.update(already_paid: new_accepted.to_s)
       end
