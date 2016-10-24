@@ -5,14 +5,14 @@
 %ul#details
    %li
       Price:
-      = "$" + @transaction.price
+      = "$" + (@transaction.price.to_i / @transaction.total_payers.to_i).to_s
    %li
       Status:
       = @transaction.status
 
    %li
       Requester:
-      = @transaction.requester
+      = User.find(@transaction.requester).name
 
    %li
       Approvals Needed:

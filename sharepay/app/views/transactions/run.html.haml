@@ -5,4 +5,8 @@
 .jumbotron
    %h5 Request Approved!
    %p Here is your virtual Credit Card Number to Make the #{@transaction.title} purchase!
-   #{@transaction.virtual_credit_card}
+   Credit Card Number: #{@transaction.virtual_credit_card}
+   %br
+   CCV: #{@transaction.ccv}
+   %br
+   Expiration: #{@transaction.expiration}

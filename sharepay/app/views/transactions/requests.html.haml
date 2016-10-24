@@ -28,7 +28,8 @@
          -if @requested_transactions
             - @requested_transactions.each do |tran|
                %tr
-                  %td= '$' + tran.price
+                  %td= '$' +  (tran.price.to_i / tran.total_payers.to_i).to_s
+
                   %td
                   %td
                   %td= tran.title
