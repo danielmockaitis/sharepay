@@ -6,5 +6,7 @@
    %h5 Request Approved!
    %p Here is your virtual Credit Card Number to Make the #{@transaction.title} purchase!
    Credit Card Number: #{@transaction.virtual_credit_card}
+   %br
    CCV: #{@transaction.ccv}
+   %br
    Expiration: #{@transaction.expiration}
