@@ -1,24 +1,28 @@
 # README
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+This is a web app for sharing payments between any number of people without having to front the cost.
 
-Things you may want to cover:
+Note:
+If you are creating a test user input this credit card number in the signup window
+* Test Credit Card Number = 4112344112344113
+
+* You can use any expiration and CCV.
 
 * Ruby version
+   2.3.0
+* 'rails', '~> 5.0.0', '>= 5.0.0.1'
 
 * System dependencies
 
 * Configuration
 
 * Database creation
+   Run 'rails db:migrate'
+   &
+   'rails db:test:prepare'
 
-* Database initialization
+   To setup the database.
 
 * How to run the test suite
-
-* Services (job queues, cache servers, search engines, etc.)
-
-* Deployment instructions
-
-* ...
+   rails rspec
+   rails cucumber
